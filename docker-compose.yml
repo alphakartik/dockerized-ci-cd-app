@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - appnet
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=admin
+      - DB_PASS=password
+    depends_on:
+      - db
+    networks:
+      - appnet
+
+  db:
+    image: postgres:15
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+    networks:
+      - appnet
+
+volumes:
+  dbdata:
+
+networks:
+  appnet:
